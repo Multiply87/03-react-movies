@@ -3,13 +3,13 @@ import { createPortal } from "react-dom";
 import type { Movie } from "../../types/movie";
 import { useEffect } from "react";
 
-export default function MovieModal({
-  movie,
-  onClose,
-}: {
+interface MovieModalProps {
   movie: Movie;
   onClose: () => void;
-}) {
+}
+
+export default function MovieModal(props: MovieModalProps) {
+  const { movie, onClose } = props;
   useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
       if (event.key === "Escape") {

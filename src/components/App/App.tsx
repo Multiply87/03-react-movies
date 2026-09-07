@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { searchMovies } from "../../services/movieService";
-import type { SearchMovieHandler, Movie } from "../../types/movie";
+import type { Movie } from "../../types/movie";
 import MovieGrid from "../MovieGrid/MovieGrid";
 import SearchBar from "../SearchBar/SearchBar";
 import css from "./App.module.css";
@@ -8,6 +8,10 @@ import toast, { Toaster } from "react-hot-toast";
 import Loader from "../Loader/Loader";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import MovieModal from "../MovieModal/MovieModal";
+
+export interface SearchMovieHandler {
+  (query: string): void;
+}
 
 function App() {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -19,24 +23,19 @@ function App() {
     setMovies([]);
     setIsLoading(true);
     setIsError(false);
-    const movieQuery = query.get("query") as string;
-    if (!movieQuery) {
-      toast("Please enter your search query.");
-      setIsLoading(false);
-    } else {
-      try {
-        const result = await searchMovies(movieQuery);
-        if (result.length === 0) {
-          toast("No movies found for your request.");
-        } else {
-          setMovies(result);
-        }
-      } catch (error) {
-        console.error("Error searching for movies:", error);
-        setIsError(true);
-      } finally {
-        setIsLoading(false);
+
+    try {
+      const result = await searchMovies(query);
+      if (result.length === 0) {
+        toast("No movies found for your request.");
+      } else {
+        setMovies(result);
       }
+    } catch (error) {
+      console.error("Error searching for movies:", error);
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
     }
   };
 

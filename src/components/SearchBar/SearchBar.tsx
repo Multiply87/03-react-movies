@@ -1,11 +1,21 @@
 import styles from "./SearchBar.module.css";
-import type { SearchMovieHandler } from "../../types/movie";
+import type { SearchMovieHandler } from "../App/App";
+import { toast } from "react-hot-toast/headless";
 
 export default function SearchBar({
   onSubmit,
 }: {
   onSubmit: SearchMovieHandler;
 }) {
+  const handleSubmit = (formData: FormData) => {
+    const query = formData.get("query") as string;
+    if (!query) {
+      toast("Please enter your search query.");
+    } else {
+      onSubmit(query);
+    }
+  };
+
   return (
     <header className={styles.header}>
       <div className={styles.container}>
@@ -17,7 +27,7 @@ export default function SearchBar({
         >
           Powered by TMDB
         </a>
-        <form className={styles.form} action={onSubmit}>
+        <form className={styles.form} action={handleSubmit}>
           <input
             className={styles.input}
             type="text"
